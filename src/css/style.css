@@ -1,18 +1,18 @@
 #livera-board-img {
-    width: 160px;
-    margin: 15px auto;
+    width: 180px;
+    margin: 25px auto;
     display: block;
     z-index: 100;
-    /*-webkit-animation:spin 3s linear infinite;
-    -moz-animation:spin 3s linear infinite;
-    animation:spin 3s linear infinite;*/
+    -webkit-animation:spin 6s linear infinite;
+    -moz-animation:spin 6s linear infinite;
+    animation:spin 6s linear infinite;
 }
 
 #topbar {
     background-color: #252835;
     /*position: relative;*/
     z-index: -2;
-    height: 250px;
+    height: 300px;
 }
 
 #app {
@@ -31,6 +31,8 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;   
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 
@@ -117,6 +119,23 @@
 	padding: 50px;
 }
 */
+#day-night-toggle{
+    margin-top: 5px;
+  /*margin-bottom: 5px;*/
+  margin-right: 3%;
+   float:right;
+    display: inline-block;
+}
+
+#day-night-toggle-text{
+   display: inline-block;
+   float: left;
+   margin-left: 5%;
+   margin-top: 25px;
+   margin-bottom: 25px;
+   font-size: 1.6em;
+
+}
 
 .centerBlock {
     display: table;
@@ -174,7 +193,7 @@
 
 }
 
-/*@-moz-keyframes spin { 
+@-moz-keyframes spin { 
 	100% { -moz-transform: rotate(360deg); } 
 }
 @-webkit-keyframes spin { 
@@ -188,4 +207,4 @@
 	 }
 
 
-*/
+

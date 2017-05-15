@@ -11,16 +11,29 @@
     <link rel="stylesheet" type="text/css" href="src/bootstrap-3.3.6-dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="src/css/style.css">
     <link rel="stylesheet" href="src/css/style-space.css">
+    <!-- <link rel="stylesheet" href="src/css/dayNightToggle.css"> -->
+    <link rel="stylesheet" href="src/css/normalize.min.css">
     <link rel="icon" type="image/png" sizes="32x32" href="sec/img/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="96x96" href="src/img/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="src/img/favicon-96x96.png">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 </head>
 
 <body id="app" ontouchstart="">
     <div class="containor-fluid">
-       
-        <div class="row"
-             v-if="topbarToggle">
+        <!--  v-bind:true-value="H264"
+                    v-bind:false-value="MJPG" -->
+        <div class="row">
+            <div class="col-xs-12">
+                <div id="day-night-toggle-text">
+                    <span>{{videoState}}</span>
+                </div>
+                <div class="toggle toggle--daynight" id="day-night-toggle">
+                    <input type="checkbox" id="toggle--daynight" class="toggle--checkbox" v-model="rtspH264Toggle" v-on:click="streamModeToggle()">
+                    <label class="toggle--btn" for="toggle--daynight"><span class="toggle--feature"></span></label>
+                </div>
+            </div>
+        </div>
+        <div class="row" v-if="topbarToggle">
             <div class="col-xs-12" id="topbar">
                 <div id="star-field"></div>
                 <div>
@@ -30,16 +43,9 @@
                 <script src="src/js/index.js"></script>
             </div>
         </div>
-
-        <div class="row"
-              v-else>
-
-              <img id="Mjpg" :src="liveviewURL" style="width:100%;" >
-                
-
-
+        <div class="row" v-else>
+            <img id="Mjpg" :src="liveviewURL" style="width:100%;">
         </div>
-        
         <div id="Robot-control">
             <div v-show="RobotControlTogglePC">
                 <div class="row" id="Robot-control-block">
@@ -62,39 +68,26 @@
                                     <span>X</span>
                                 </div>
                             </div>
-                            <div class="col-xs-4 col-xs-offset-2" id="button"
-                            @mousedown="RobotCommand('motor 150 150\n')"
-                            @mouseup="RobotCommand('motor 0 0\n')"
-                            >
+                            <div class="col-xs-4 col-xs-offset-2" id="button" @mousedown="RobotCommand('motor 150 150\n')" @mouseup="RobotCommand('motor 0 0\n')">
                                 <div class="centerBlock">
                                     <span class="glyphicon glyphicon-menu-up" id="record-icon" aria-hidden="true"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-4" id="button"
-                              @mousedown="RobotCommand('motor 0 80\n')"
-                            @mouseup="RobotCommand('motor 0 0\n')" 
-                            >
+                            <div class="col-xs-4" id="button" @mousedown="RobotCommand('motor 0 80\n')" @mouseup="RobotCommand('motor 0 0\n')">
                                 <div class="centerBlock">
                                     <span class="glyphicon glyphicon-menu-left" id="record-icon" aria-hidden="true"></span>
                                 </div>
                             </div>
-                            <div class="col-xs-4 col-xs-offset-4" id="button"
-                           
-                           @mousedown="RobotCommand('motor 80 0\n')"
-                            @mouseup="RobotCommand('motor 0 0\n')" 
-                            >
+                            <div class="col-xs-4 col-xs-offset-4" id="button" @mousedown="RobotCommand('motor 80 0\n')" @mouseup="RobotCommand('motor 0 0\n')">
                                 <div class="centerBlock">
                                     <span class="glyphicon glyphicon-menu-right" id="record-icon" aria-hidden="true"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-4 col-xs-offset-4" id="button"
-                           @mousedown="RobotCommand('motor -150 -150\n')"
-                              @mouseup="RobotCommand('motor 0 0\n')"
-                            >
+                            <div class="col-xs-4 col-xs-offset-4" id="button" @mousedown="RobotCommand('motor -150 -150\n')" @mouseup="RobotCommand('motor 0 0\n')">
                                 <div class="centerBlock">
                                     <span class="glyphicon glyphicon-menu-down" id="record-icon" aria-hidden="true"></span>
                                 </div>
@@ -103,27 +96,21 @@
                     </div>
                     <div class="col-xs-4">
                         <div class="row">
-                            <div class="col-xs-12" id="button"
-                              @click="RobotCommand('camera up\n')"
-                            >
+                            <div class="col-xs-12" id="button" @click="RobotCommand('camera up\n')">
                                 <div class="centerBlock">
                                     <span class="glyphicon glyphicon-triangle-top" id="record-icon" aria-hidden="true"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12" id="button"
-                              @click="RobotCommand('laser\n')"
-                            >
+                            <div class="col-xs-12" id="button" @click="RobotCommand('laser\n')">
                                 <div class="centerBlock">
                                     <span class="glyphicon glyphicon-asterisk" id="record-icon" aria-hidden="true"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12" id="button"
-                              @click="RobotCommand('camera down\n')"
-                            >
+                            <div class="col-xs-12" id="button" @click="RobotCommand('camera down\n')">
                                 <div class="centerBlock">
                                     <span class="glyphicon glyphicon-triangle-bottom" id="record-icon" aria-hidden="true"></span>
                                 </div>
@@ -132,8 +119,6 @@
                     </div>
                 </div>
             </div>
-
-
             <div v-show="RobotControlToggleMobile">
                 <div class="row" id="Robot-control-block">
                     <div class="col-xs-8" id="leftBlock">
@@ -143,38 +128,26 @@
                                     <span>X</span>
                                 </div>
                             </div>
-                            <div class="col-xs-4 col-xs-offset-2" id="button"
-                            @touchstart="RobotCommand('motor 150 150\n')"
-                            @touchend="RobotCommand('motor 0 0\n')"
-                            >
+                            <div class="col-xs-4 col-xs-offset-2" id="button" @touchstart="RobotCommand('motor 150 150\n')" @touchend="RobotCommand('motor 0 0\n')">
                                 <div class="centerBlock">
                                     <span class="glyphicon glyphicon-menu-up" id="record-icon" aria-hidden="true"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-4" id="button"
-                             @touchstart="RobotCommand('motor 0 80\n')"
-                            @touchend="RobotCommand('motor 0 0\n')" 
-                            >
+                            <div class="col-xs-4" id="button" @touchstart="RobotCommand('motor 0 80\n')" @touchend="RobotCommand('motor 0 0\n')">
                                 <div class="centerBlock">
                                     <span class="glyphicon glyphicon-menu-left" id="record-icon" aria-hidden="true"></span>
                                 </div>
                             </div>
-                            <div class="col-xs-4 col-xs-offset-4" id="button"
-                              @touchstart="RobotCommand('motor 80 0\n')"
-                            @touchend="RobotCommand('motor 0 0\n')" 
-                            >
+                            <div class="col-xs-4 col-xs-offset-4" id="button" @touchstart="RobotCommand('motor 80 0\n')" @touchend="RobotCommand('motor 0 0\n')">
                                 <div class="centerBlock">
                                     <span class="glyphicon glyphicon-menu-right" id="record-icon" aria-hidden="true"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-4 col-xs-offset-4" id="button"
-                              @touchstart="RobotCommand('motor -150 -150\n')"
-                              @touchend="RobotCommand('motor 0 0\n')" 
-                            >
+                            <div class="col-xs-4 col-xs-offset-4" id="button" @touchstart="RobotCommand('motor -150 -150\n')" @touchend="RobotCommand('motor 0 0\n')">
                                 <div class="centerBlock">
                                     <span class="glyphicon glyphicon-menu-down" id="record-icon" aria-hidden="true"></span>
                                 </div>
@@ -183,27 +156,21 @@
                     </div>
                     <div class="col-xs-4">
                         <div class="row">
-                            <div class="col-xs-12" id="button"
-                              @touchstart="RobotCommand('camera up\n')"
-                            >
+                            <div class="col-xs-12" id="button" @touchstart="RobotCommand('camera up\n')">
                                 <div class="centerBlock">
                                     <span class="glyphicon glyphicon-triangle-top" id="record-icon" aria-hidden="true"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12" id="button"
-                              @touchstart="RobotCommand('laser\n')"
-                            >
+                            <div class="col-xs-12" id="button" @touchstart="RobotCommand('laser\n')">
                                 <div class="centerBlock">
                                     <span class="glyphicon glyphicon-asterisk" id="record-icon" aria-hidden="true"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12" id="button"
-                              @touchstart="RobotCommand('camera down\n')"
-                            >
+                            <div class="col-xs-12" id="button" @touchstart="RobotCommand('camera down\n')">
                                 <div class="centerBlock">
                                     <span class="glyphicon glyphicon-triangle-bottom" id="record-icon" aria-hidden="true"></span>
                                 </div>
@@ -213,41 +180,32 @@
                 </div>
             </div>
         </div>
-
-
-
         <div class="row">
-           
             <div class="col-xs-8" @click="videoCapture" id="button" v-show="videoPhotoToggle">
                 <div class="centerBlock">
-                    <div id="btn-record-start" 
-                         v-show="recordToggle">
+                    <div id="btn-record-start" v-show="recordToggle">
                         <span class="glyphicon glyphicon-record" id="record-icon" aria-hidden="true"></span>
                         <span>START RECORDING</span>
                     </div>
-                    <div id="btn-record-stop" 
-                         v-show="!recordToggle">
+                    <div id="btn-record-stop" v-show="!recordToggle">
                         <span class="glyphicon glyphicon-stop" style="color:red" id="record-icon" aria-hidden="true"></span>
                         <span>STOP</span>
                     </div>
                 </div>
             </div>
-
-              <div class="col-xs-8" @click="takeSnapshot" id="button" v-show="!videoPhotoToggle">
+            <div class="col-xs-8" @click="takeSnapshot" id="button" v-show="!videoPhotoToggle">
                 <div class="centerBlock">
-                    <div id="btn-record-start" 
-                         @click="recordToggle">
+                    <div id="btn-record-start" @click="recordToggle">
                         <span class="glyphicon glyphicon-camera" id="record-icon" aria-hidden="true"></span>
                         <span>SNAPSHOT</span>
                     </div>
-                   <!--  <div id="btn-record-stop" 
+                    <!--  <div id="btn-record-stop" 
                          v-show="!recordToggle">
                         <span class="glyphicon glyphicon-stop" style="color:red" id="record-icon" aria-hidden="true"></span>
                         <span>STOP</span>
                     </div> -->
                 </div>
             </div>
-
             <div class="col-xs-4" id="button" @click="fileDownload">
                 <div class="centerBlock">
                     <div id="btn-video-download">
@@ -257,42 +215,38 @@
                 </div>
             </div>
         </div>
-
-         
-             <div id="download-popup" v-show="showVideo">
-                  <div class="row">
-                            <div class="col-xs-2" id="button" @click="closeFileDownload">
-                            <div id="exit-button">
-                                <span>X</span>
-                            </div>
-                        </div>
-                          </div>
-              <ul id="download-popup-list">
+        <div id="download-popup" v-show="showVideo">
+            <div class="row">
+                <div class="col-xs-2" id="button" @click="closeFileDownload">
+                    <div id="exit-button">
+                        <span>X</span>
+                    </div>
+                </div>
+            </div>
+            <ul id="download-popup-list">
                 <li v-for="videoDir in videoDirs">
-                  <a :href="videoDownloadDir+videoDir" target="_self">{{videoDir}}</a>
+                  <!--   <img src="videoDownloadDir+videoDir" style="width:70%;">
+                    <video width="320" controls="controls" autoplay="autoplay">
+                        <source src="videoDownloadDir+videoDir" type="video/h.264" />
+                    </video> -->
+                    <a :href="videoDownloadDir+videoDir" target="_self">{{videoDir}}</a>
                 </li>
-              </ul>
-              </div>
-         
-
+            </ul>
+        </div>
         <div class="row">
-          
-
             <div class="col-xs-8" @click="topbarStateToggle" id="button">
                 <div class="centerBlock">
-                    <div id="btn-record-start" 
-                         @click="recordToggle">
+                    <div id="btn-record-start" @click="recordToggle">
                         <span class="glyphicon glyphicon-film" id="record-icon" aria-hidden="true"></span>
                         <span>LIVEVIEW</span>
                     </div>
-                   <!--  <div id="btn-record-stop" 
+                    <!--  <div id="btn-record-stop" 
                          v-show="!recordToggle">
                         <span class="glyphicon glyphicon-stop" style="color:red" id="record-icon" aria-hidden="true"></span>
                         <span>STOP</span>
                     </div> -->
                 </div>
             </div>
-
             <div class="col-xs-4" id="button" @click="videoResoStateToggle">
                 <div class="centerBlock">
                     <div id="btn-video-download">
@@ -302,14 +256,9 @@
                 </div>
             </div>
         </div>
-
-       
-
-       
         <!-- </div> -->
         <!-- 1.station mode  2.rc car 3.LineTrack 4.screen reso 5.old api -->
-        <div id="screen-resolution" 
-              v-show="screenResoToggle">
+        <div id="screen-resolution" v-show="screenResoToggle">
             <div class="row">
                 <div class="col-xs-4" id="button" @click="changeVideoReso('resolve=0&rotate=0')">
                     <div class="centerBlock">
@@ -350,36 +299,30 @@
                         <span>10fps</span>
                     </div>
                 </div>
-
-                  <div class="col-xs-3" id="button" @click="changeVideoFps('&fps=15')">
+                <div class="col-xs-3" id="button" @click="changeVideoFps('&fps=15')">
                     <div class="centerBlock">
                         <span>15fps</span>
                     </div>
                 </div>
-                 <div class="col-xs-3" id="button" @click="changeVideoFps('&fps=20')">
+                <div class="col-xs-3" id="button" @click="changeVideoFps('&fps=20')">
                     <div class="centerBlock">
                         <span>20fps</span>
                     </div>
                 </div>
-                 <div class="col-xs-3" id="button" @click="changeVideoFps('&fps=25')">
+                <div class="col-xs-3" id="button" @click="changeVideoFps('&fps=25')">
                     <div class="centerBlock">
                         <span>25fps</span>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-xs-12" id="button" @click="sendVideoReso">
                         <div class="centerBlock">
-                            <span><strong> SENT!</strong></span> 
+                            <span><strong> SENT!</strong></span>
                             <span>({{defaultVideoReso}}+{{defaultVideoFps}})</span>
                         </div>
                     </div>
                 </div>
-                
             </div>
-
-           
-
         </div>
         <div class="row" id="station-block" v-if='station_show'>
             <div class="popupBlock">
@@ -391,7 +334,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-
                     <div class="btn-group btn-group-lg" role="group" aria-label="..." id="apAdSwitch">
                         <button type="button" class="btn btn-default" @click="adModeSwitch">
                             AD</button>
@@ -415,11 +357,9 @@
                     </div>
                     <div class="alert alert-warning" role="alert" v-show="wifiAlertState">
                         {{wifiAlertMessage}}</div>
-
-                   <!--  <span v-show="wifiModes" id="apAdNotice">AD mode would let Livera connect to WIFI router</span>
+                    <!--  <span v-show="wifiModes" id="apAdNotice">AD mode would let Livera connect to WIFI router</span>
                       <span v-show="!wifiModes" id="apAdNotice">AP mode enables Livera become stand alone WIFI</span> -->
-
-                   <!--  <input type="WIFI" class="form-control" id="inputWifi" placeholder="WIFI Name"
+                    <!--  <input type="WIFI" class="form-control" id="inputWifi" placeholder="WIFI Name"
                             v-model="wifiName">
                     <input type="WIFI" class="form-control" id="inputPassward" placeholder="Password"
                             v-model="wifiPassward">
@@ -444,7 +384,7 @@
                 </div>
             </div>
             <div class="col-xs-4" id="button" @click="startTracking">
-                <div class="centerBlock" >
+                <div class="centerBlock">
                     <span class="glyphicon glyphicon-road" id="record-icon" aria-hidden="true"></span>
                     <span>Tracking</span>
                 </div>
@@ -1065,139 +1005,183 @@
         </svg>
     </template>
     <script>
-
-// window.ontouchstart = function(e) { 
-//     e.preventDefault(); 
-// };
+    // window.ontouchstart = function(e) { 
+    //     e.preventDefault(); 
+    // };
 
 
     var vm = new Vue({
         el: '#app',
         data: {
-            topbarToggle:true,
-            videoPhotoToggle:true,
+            // rtspH264Toggle:{state:['RTSP','H264']},
+            videoState: 'H264/RTSP MODE',
+            topbarToggle: true,
+            videoPhotoToggle: true,
             recordToggle: true,
             station_show: false,
             RobotControlTogglePC: false,
-            RobotControlToggleMobile:false,
-            showVideo:false,
-            screenResoToggle:false,
+            RobotControlToggleMobile: false,
+            showVideo: false,
+            screenResoToggle: false,
             //true for ad, false for ap
             wifiModes: true,
             wifiAlertState: false,
             wifiAlertMessage: "",
             // liveviewURL:'http://'+window.location.hostname + ':8080' + '/mjpg',
-            liveviewURL:'http://'+window.location.hostname + ':8080' ,
+            liveviewURL: 'http://' + window.location.hostname + ':8080',
             wifiAdAlert: 'connecting to WIFI router, this IP address will change to: (curren IP of Livera)/mmc/www/index.html \n Notice: press livera reset button for 3 second will roll back to default AP mode!',
             wifiInputAlert: 'please fill up the form',
-            apDefaultWifiInputAlert:'default wifi activated, the current connection breaked, please rejoin and check your wifi list with the new AP name',
-            apWifiInputAlert:'Customer wifi activated, please check your wifi list',
+            apDefaultWifiInputAlert: 'default wifi activated, the current connection breaked, please rejoin and check your wifi list with the new AP name',
+            apWifiInputAlert: 'Customer wifi activated, please check your wifi list',
             // currentWifiMode:'ad',
-            apWifiCorrection:'please give a 8 figure or above passward!',
-            xhr:null,
+            apWifiCorrection: 'please give a 8 figure or above passward!',
+            xhr: null,
             //ajax web API
             startRecordAPI: '/hicat/record?save=1',
             stopRecordAPI: '/hicat/record?save=0',
             fileDownloadAPI: '/hicat/files',
-            videoDownloadDir:'http://'+window.location.hostname+'/mmc/video/',
+            videoDownloadDir: 'http://' + window.location.hostname + '/mmc/video/',
             videoResoAPI: '/hicat/setCamera?',
-            defaultVideoReso:'resolve=2&rotate=0',
-            defaultVideoFps:'&fps=20',
-            snapshotCounts:0,
+            defaultVideoReso: 'resolve=2&rotate=0',
+            defaultVideoFps: '&fps=20',
+            snapshotCounts: 0,
             snapshotAPI: '/hicat/snapshot?name=',
-            snapshotStoreDir:'/www/mmc/video',
+            snapshotStoreDir: '/www/mmc/video/',
             //switch mode from Mjpg to RTSP
             //PS:could not record video or snapshot under Mjpg mode
             //RTSP:mode=0 Mjpg:mode=1
-            switchModeAPI: '/hicat/videoServer?mode=',
-            stationModeAPI:'/hicatx/stationMode?',
-            apModeAPI:'/hicat/apMode?',
-            WebSocketURL:'',
-            command:'',
-            ws:'',
-            wifiName:null,
-            wifiPassward:null,
+            switchModeAPI: 'http://' + window.location.hostname +'/hicat/videoServer?mode=',
+            stationModeAPI: '/hicatx/stationMode?',
+            apModeAPI: '/hicat/apMode?',
+            opencvUrl: 'http://' + window.location.hostname + '/mmc/opencv/hi.jpg',
+            WebSocketURL: '',
+            command: '',
+            ws: '',
+            wifiName: null,
+            wifiPassward: null,
             //return object from filedownload
             videoDirs: []
 
         },
         methods: {
-            topbarStateToggle:function(){
-       
-                this.topbarToggle = !this.topbarToggle;
-                this.videoPhotoToggle=!this.videoPhotoToggle;
+            streamModeToggle: function() {
 
-                if (this.topbarToggle == false) {
-                  var xhr = new XMLHttpRequest()
+                console.log('catch me!');
+                console.log(vm.rtspH264Toggle);
 
-                  xhr.open('GET', this.switchModeAPI + '1', true)
-
-                  xhr.onload=function(){
-                    console.log('Mjpg'+JSON.parse(xhr.responseText));
-                  }
-                }else{
-                     var xhr = new XMLHttpRequest()
-
-                  xhr.open('GET', this.switchModeAPI + '0', true)
-                
-
-                  xhr.onload=function(){
-                    console.log('RTSP'+JSON.parse(xhr.responseText));
-                  }
-                }
+                 var xhr = new XMLHttpRequest();
               
+                if (vm.rtspH264Toggle == true) {
+                    console.log('H264 MODE');
+                    vm.videoState = 'Sending...';
+
+                    xhr.open('GET', (this.switchModeAPI + '0'), true);
+                    console.log('message sent');
+
+                   
+                    xhr.onload = function() {
+                        console.log('message received');
+                        console.log('H264' + JSON.parse(xhr.responseText));
+                        vm.videoPhotoToggle = !vm.videoPhotoToggle;
+                        vm.topbarToggle = true;
+                        return vm.videoState = 'H264 MODE';
+                  
+                     }
+                    xhr.send();
+
+                } else if (vm.rtspH264Toggle == false || vm.rtspH264Toggle == null) {
+                    console.log('MJPG MODE');
+                    vm.videoState = 'Sending...';
+                   
+                    // xhr.open('GET', this.fileDownloadAPI, true);
+                    xhr.open('GET', this.switchModeAPI + '1', true);
+                    console.log('message sent');
+
+                  
+                    xhr.onload = function() {
+                           console.log('message received');
+                        console.log('MJPG' + JSON.parse(xhr.responseText));
+                        vm.videoPhotoToggle = !vm.videoPhotoToggle;
+                        return vm.videoState = 'MJPG MODE';
+                        }
+
+                    xhr.send();
+                   
+
+
+                }
+
+
+            },
+
+            topbarStateToggle: function() {
+
+                this.topbarToggle = !this.topbarToggle;
+                // this.videoPhotoToggle = !this.videoPhotoToggle;
+
+                // if (this.topbarToggle == false) {
+                //   var xhr = new XMLHttpRequest()
+
+                //   xhr.open('GET', this.switchModeAPI + '1', true)
+
+                //   xhr.onload=function(){
+                //     console.log('Mjpg'+JSON.parse(xhr.responseText));
+                //   }
+                // }else{
+                //      var xhr = new XMLHttpRequest()
+
+                //   xhr.open('GET', this.switchModeAPI + '0', true)
+
+
+                //   xhr.onload=function(){
+                //     console.log('RTSP'+JSON.parse(xhr.responseText));
+                //   }
+                // }
+
             },
             wifiStateToggle: function() {
                 vm.wifiAlertState = false;
                 return this.station_show = !this.station_show;
             },
             RobotControlStateToggle: function() {
-              function detectmob() { 
-                 if( navigator.userAgent.match(/Android/i)
-                 || navigator.userAgent.match(/webOS/i)
-                 || navigator.userAgent.match(/iPhone/i)
-                 || navigator.userAgent.match(/iPad/i)
-                 || navigator.userAgent.match(/iPod/i)
-                 || navigator.userAgent.match(/BlackBerry/i)
-                 || navigator.userAgent.match(/Windows Phone/i)
-                 ){
-                    return true;
-                  }
-                 else {
-                    return false;
-                  }
+                function detectmob() {
+                    if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
 
                 if (detectmob()) {
                     vm.RobotControlToggleMobile = !vm.RobotControlToggleMobile;
                     vm.RobotControlTogglePC = false;
                     console.log('mobilepopup!');
-                }else{
+                } else {
                     vm.RobotControlTogglePC = !vm.RobotControlTogglePC;
                     vm.RobotControlToggleMobile = false;
                     console.log('pcpopup!');
                 }
 
 
-                
-                 vm.WebSocketURL = 'ws://' + window.location.hostname+':7681'
+
+                vm.WebSocketURL = 'ws://' + window.location.hostname + ':7681'
 
                 vm.ws = new WebSocket(vm.WebSocketURL);
-                
-                vm.ws.onopen=function(event){
-                      console.log('ws connection opened:'+this.WebSocketURL);
-                  }
+
+                vm.ws.onopen = function(event) {
+                    console.log('ws connection opened:' + this.WebSocketURL);
+                }
 
 
 
-                 if (vm.RobotControlToggle != true) {
-                 // vm.ws.close();
-                   
-                 }
+                if (vm.RobotControlToggle != true) {
+                    // vm.ws.close();
+
+                }
             },
-            RobotCommand:function(command){
-              vm.ws.send(command);
-              console.log('event triggered:'+command);
+            RobotCommand: function(command) {
+                vm.ws.send(command);
+                console.log('event triggered:' + command);
             },
             // ajaxRequest: function(ajaxAPI) {
             //     var xhr = new XMLHttpRequest();
@@ -1213,7 +1197,7 @@
                 var xhr = new XMLHttpRequest()
                 var self = this
 
-                if (this.recordToggle==true) {
+                if (this.recordToggle == true) {
                     xhr.open('GET', this.startRecordAPI, true);
                     console.log("see click: start record!");
                 } else {
@@ -1227,161 +1211,161 @@
                     console.log(answer1)
 
                     if (answer1.result == "OK") {
-                      console.log("change state!")
-                      vm.recordToggle = !vm.recordToggle;
-                      console.log("recent record stage:"+vm.recordToggle);
+                        console.log("change state!")
+                        vm.recordToggle = !vm.recordToggle;
+                        console.log("recent record stage:" + vm.recordToggle);
                     } else {
-                      alarm(answer1.result + 'occoured!');
+                        alarm(answer1.result + 'occoured!');
                     }
                 }
                 xhr.send()
             },
-            closeFileDownload:function(){
-              return vm.showVideo = false;
+            closeFileDownload: function() {
+                return vm.showVideo = false;
             },
             fileDownload: function() {
 
-                 if(vm.showVideo == true){
-                     vm.videoDir = [];
-                return vm.showVideo = false;
-              }
-             
+                if (vm.showVideo == true) {
+                    vm.videoDir = [];
+                    return vm.showVideo = false;
+                }
+
                 console.log("see click!");
                 var xhr = new XMLHttpRequest();
 
                 xhr.open('GET', this.fileDownloadAPI, true);
                 // this.ajaxRequest(this.fileDownloadAPI);
-                console.log("sent request! the request is:"+this.fileDownloadAPI);
+                console.log("sent request! the request is:" + this.fileDownloadAPI);
 
-                  xhr.onload = function() {
+                xhr.onload = function() {
                     console.log("got message!");
-                     var rawFileMessage = JSON.parse(xhr.responseText);
-                     for (var i = 0; i < rawFileMessage.files.length; i++) {
-                       vm.videoDirs.push(rawFileMessage.files[i].name);
-                        }
-                       console.log(vm.videoDirs);
-                       return vm.showVideo = true;
-                     }
-                    
-                
+                    var rawFileMessage = JSON.parse(xhr.responseText);
+                    for (var i = 0; i < rawFileMessage.files.length; i++) {
+                        vm.videoDirs.push(rawFileMessage.files[i].name);
+                    }
+                    console.log(vm.videoDirs);
+                    return vm.showVideo = true;
+                }
+
+
                 xhr.send();
             },
-            takeSnapshot:function(){
-              vm.snapshotCounts++;
-              console.log(vm.snapshotCounts);
-              var currentSnapshotAPI = this.snapshotAPI + this.snapshotCounts +'.jpg&dir='+this.snapshotStoreDir;
+            takeSnapshot: function() {
+                vm.snapshotCounts++;
+                console.log(vm.snapshotCounts);
+                var currentSnapshotAPI = this.snapshotAPI + this.snapshotCounts + '.jpg&dir=' + this.snapshotStoreDir;
                 var xhr = new XMLHttpRequest();
-            //     var self = this;
+                     var self = this;
 
                 xhr.open('GET', currentSnapshotAPI, true);
                 // this.ajaxRequest(this.fileDownloadAPI);
-                console.log("sent request! the request is:"+currentSnapshotAPI);
+                console.log("sent request! the request is:" + currentSnapshotAPI);
 
-                  xhr.onload = function() {
+                xhr.onload = function() {
                     console.log("got message!");
-                     var snapshotAnswer = JSON.parse(xhr.responseText);
-                     console.log(snapshotAnswer);
-                   }
-            },
-            videoResoStateToggle:function(){
-              return this.screenResoToggle = !this.screenResoToggle;
-            },
-            changeVideoReso: function(updateReso) {
-                console.log("see click! receive="+updateReso);
-                // this.ajaxRequest(this.videoResoAPI + updateReso);
-                this.defaultVideoReso = updateReso;
-            },
-            changeVideoFps:function(updateFps){
-                 console.log("see click! receive="+updateFps);
-                this.defaultVideoFps = updateFps;
-            },
-            sendVideoReso:function(){
-                 var xhr = new XMLHttpRequest();
-            //     var self = this;
-
-                xhr.open('GET', this.videoResoAPI+this.defaultVideoReso+this.defaultVideoFps, true);
-                xhr.onload = function(){
-                  var answer = JSON.parse(xhr.responseText);
-                  console.log(answer.result);
+                    var snapshotAnswer = JSON.parse(xhr.responseText);
+                    console.log(snapshotAnswer);
                 }
                 xhr.send();
             },
-            adModeSwitch:function(){
-              vm.wifiAlertState = false;
-              return vm.wifiModes = true;
+            videoResoStateToggle: function() {
+                return this.screenResoToggle = !this.screenResoToggle;
             },
-            apModeSwitch:function(){
-              vm.wifiAlertState = false;
-              return vm.wifiModes = false;
+            changeVideoReso: function(updateReso) {
+                console.log("see click! receive=" + updateReso);
+                // this.ajaxRequest(this.videoResoAPI + updateReso);
+                this.defaultVideoReso = updateReso;
             },
-            apModeStart:function(){
-              console.log('see click!');
-             var xhr = new XMLHttpRequest();
-              if (this.wifiName == null && this.wifiPassward == '' ) {
-                vm.wifiAlertState = true;
-                 vm.wifiAlertMessage = vm.apDefaultWifiInputAlert;
-                 var Num=''; 
+            changeVideoFps: function(updateFps) {
+                console.log("see click! receive=" + updateFps);
+                this.defaultVideoFps = updateFps;
+            },
+            sendVideoReso: function() {
+                var xhr = new XMLHttpRequest();
+                //     var self = this;
 
-                    for(var i=0;i<6;i++) 
-                    { 
-                    Num+=Math.floor(Math.random()*10); 
-                    } 
-                 var currentWifiInfo = this.apModeAPI+ "ssid=hicat"+ Num +"&password=88888888";
-                 console.log('default');
+                xhr.open('GET', this.videoResoAPI + this.defaultVideoReso + this.defaultVideoFps, true);
+                xhr.onload = function() {
+                    var answer = JSON.parse(xhr.responseText);
+                    console.log(answer.result);
+                }
+                xhr.send();
+            },
+            adModeSwitch: function() {
+                vm.wifiAlertState = false;
+                return vm.wifiModes = true;
+            },
+            apModeSwitch: function() {
+                vm.wifiAlertState = false;
+                return vm.wifiModes = false;
+            },
+            apModeStart: function() {
+                console.log('see click!');
+                var xhr = new XMLHttpRequest();
+                if (this.wifiName == null && this.wifiPassward == '') {
+                    vm.wifiAlertState = true;
+                    vm.wifiAlertMessage = vm.apDefaultWifiInputAlert;
+                    var Num = '';
+
+                    for (var i = 0; i < 6; i++) {
+                        Num += Math.floor(Math.random() * 10);
+                    }
+                    var currentWifiInfo = this.apModeAPI + "ssid=hicat" + Num + "&password=88888888";
+                    console.log('default');
                     return xhr.open('GET', currentWifiInfo, true);
 
 
-              } else if (this.wifiPassward.length <= 8) {
+                } else if (this.wifiPassward.length <= 8) {
                     vm.wifiAlertState = true;
                     return vm.wifiAlertMessage = vm.apWifiCorrection;
 
-              }else{
-              var currentWifiInfo =this.apModeAPI+ "ssid="+this.wifiName+"&password="+this.wifiPassward;
-              console.log('wifiAPI:'+currentWifiInfo);
-              }
-               xhr.open('GET', currentWifiInfo, true);
-           
+                } else {
+                    var currentWifiInfo = this.apModeAPI + "ssid=" + this.wifiName + "&password=" + this.wifiPassward;
+                    console.log('wifiAPI:' + currentWifiInfo);
+                }
+                xhr.open('GET', currentWifiInfo, true);
+
                 xhr.send();
                 vm.wifiAlertState = true;
                 vm.wifiAlertMessage = vm.apWifiInputAlert;
 
             },
-            stationModeStart:function(){
-              console.log('see click!');
-              if (this.wifiName == null) {
-                console.log('didnt fill out form!');
-                vm.wifiAlertState = true;
-                return vm.wifiAlertMessage = vm.wifiInputAlert;
-              }else{
-              var currentWifiInfo =this.stationModeAPI+ "ssid="+this.wifiName+"&password="+this.wifiPassward;
-              console.log('wifiAPI:'+currentWifiInfo);
-             
-             var xhr = new XMLHttpRequest();
-
-
-                xhr.open('GET', currentWifiInfo, true);
-           
-                xhr.send();
-                vm.wifiAlertState = true;
-                return vm.wifiAlertMessage = vm.wifiAdAlert;
-            }
-          },
-          startTracking:function(){
-             console.log('start tracking color!!');
-             var colors = new tracking.ColorTracker(['magenta', 'cyan', 'yellow']);
-
-              colors.on('track', function(event) {
-                if (event.data.length === 0) {
-                  // No colors were detected in this frame.
+            stationModeStart: function() {
+                console.log('see click!');
+                if (this.wifiName == null) {
+                    console.log('didnt fill out form!');
+                    vm.wifiAlertState = true;
+                    return vm.wifiAlertMessage = vm.wifiInputAlert;
                 } else {
-                  event.data.forEach(function(rect) {
-                    console.log(rect.x, rect.y, rect.height, rect.width, rect.color);
-                  });
-                }
-              });
+                    var currentWifiInfo = this.stationModeAPI + "ssid=" + this.wifiName + "&password=" + this.wifiPassward;
+                    console.log('wifiAPI:' + currentWifiInfo);
 
-              tracking.track('#Mjpg', colors);
-          }
+                    var xhr = new XMLHttpRequest();
+
+
+                    xhr.open('GET', currentWifiInfo, true);
+
+                    xhr.send();
+                    vm.wifiAlertState = true;
+                    return vm.wifiAlertMessage = vm.wifiAdAlert;
+                }
+            },
+            startTracking: function() {
+                console.log('start tracking color!!');
+                var colors = new tracking.ColorTracker(['magenta', 'cyan', 'yellow']);
+
+                colors.on('track', function(event) {
+                    if (event.data.length === 0) {
+                        // No colors were detected in this frame.
+                    } else {
+                        event.data.forEach(function(rect) {
+                            console.log(rect.x, rect.y, rect.height, rect.width, rect.color);
+                        });
+                    }
+                });
+
+                tracking.track('#Mjpg', colors);
+            }
         },
 
         //synchronize time
