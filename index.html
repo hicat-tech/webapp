@@ -225,7 +225,7 @@
             </div>
             <ul id="download-popup-list">
                 <li v-for="videoDir in videoDirs">
-                  <!--   <img src="videoDownloadDir+videoDir" style="width:70%;">
+                    <!--   <img src="videoDownloadDir+videoDir" style="width:70%;">
                     <video width="320" controls="controls" autoplay="autoplay">
                         <source src="videoDownloadDir+videoDir" type="video/h.264" />
                     </video> -->
@@ -234,11 +234,15 @@
             </ul>
         </div>
         <div class="row">
-            <div class="col-xs-8" @click="topbarStateToggle" id="button">
+            <div class="col-xs-8"  id="button">
                 <div class="centerBlock">
-                    <div id="btn-record-start" @click="recordToggle">
+                    <div id="btn-record-start" v-if="liveviewToggle" @click="topbarStateToggle">
                         <span class="glyphicon glyphicon-film" id="record-icon" aria-hidden="true"></span>
                         <span>LIVEVIEW</span>
+                    </div>
+                    <div id="btn-record-start" v-else :style="recordBlockColor">
+                        <span class="glyphicon glyphicon-time" id="record-icon" aria-hidden="true" :style="recordBlockColor"></span>
+                        <span>{{recordTime}}</span>
                     </div>
                     <!--  <div id="btn-record-stop" 
                          v-show="!recordToggle">
@@ -370,6 +374,23 @@
                 </div>
             </div>
         </div>
+        <div class="row" id="tracking-block" v-if="trackingToggle">
+            <div class="col-xs-12">
+                <span>This section would require you to telnet or serial connected to Livera's Linux system, and start the demo program like <strong>line_track</strong> or <strong>match</strong> before view the result</span>
+                <br>
+                <pre><code class="c">
+//step 1 go into the opencv folder to find app
+<strong>cd /www/mmc/opencv</strong>
+//step 2 make sure we've exported the opencv lib to the system's env
+<strong>export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/www/mmc/opencv/opencvlib/lib</strong>
+//step 3 start the cv app
+./line_track //this app would let the robot kit to visually follow black line
+./match model.jpg //object tracking, you have to make a model image for a pure shape 
+//once the app started we could view result under this web app or go to the address: IP/mmc/opencv/hi.html
+
+                </code></pre>
+            </div>
+        </div>
         <div class="row">
             <div class="col-xs-4" id="button" @click="wifiStateToggle">
                 <div class="centerBlock">
@@ -380,13 +401,13 @@
             <div class="col-xs-4" id="button" @click="RobotControlStateToggle">
                 <div class="centerBlock">
                     <span class="glyphicon glyphicon-screenshot" id="record-icon" aria-hidden="true"></span>
-                    <span>Robot control</span>
+                    <span>ROBOT</span>
                 </div>
             </div>
             <div class="col-xs-4" id="button" @click="startTracking">
                 <div class="centerBlock">
                     <span class="glyphicon glyphicon-road" id="record-icon" aria-hidden="true"></span>
-                    <span>Tracking</span>
+                    <span>TRACKING</span>
                 </div>
             </div>
         </div>
@@ -1023,10 +1044,14 @@
             RobotControlToggleMobile: false,
             showVideo: false,
             screenResoToggle: false,
+            trackingToggle: false,
             //true for ad, false for ap
             wifiModes: true,
             wifiAlertState: false,
             wifiAlertMessage: "",
+            liveviewToggle: true,
+            recordTime: '00:00:00',
+            recordBlockColor:null,
             // liveviewURL:'http://'+window.location.hostname + ':8080' + '/mjpg',
             liveviewURL: 'http://' + window.location.hostname + ':8080',
             wifiAdAlert: 'connecting to WIFI router, this IP address will change to: (curren IP of Livera)/mmc/www/index.html \n Notice: press livera reset button for 3 second will roll back to default AP mode!',
@@ -1050,15 +1075,17 @@
             //switch mode from Mjpg to RTSP
             //PS:could not record video or snapshot under Mjpg mode
             //RTSP:mode=0 Mjpg:mode=1
-            switchModeAPI: 'http://' + window.location.hostname +'/hicat/videoServer?mode=',
+            switchModeAPI: 'http://' + window.location.hostname + '/hicat/videoServer?mode=',
             stationModeAPI: '/hicatx/stationMode?',
             apModeAPI: '/hicat/apMode?',
             opencvUrl: 'http://' + window.location.hostname + '/mmc/opencv/hi.jpg',
+            cvImageUrl: '../opencv/hi.jpg?',
             WebSocketURL: '',
             command: '',
             ws: '',
             wifiName: null,
             wifiPassward: null,
+            countTime:null,
             //return object from filedownload
             videoDirs: []
 
@@ -1069,8 +1096,8 @@
                 console.log('catch me!');
                 console.log(vm.rtspH264Toggle);
 
-                 var xhr = new XMLHttpRequest();
-              
+                var xhr = new XMLHttpRequest();
+
                 if (vm.rtspH264Toggle == true) {
                     console.log('H264 MODE');
                     vm.videoState = 'Sending...';
@@ -1078,35 +1105,36 @@
                     xhr.open('GET', (this.switchModeAPI + '0'), true);
                     console.log('message sent');
 
-                   
+
                     xhr.onload = function() {
                         console.log('message received');
                         console.log('H264' + JSON.parse(xhr.responseText));
                         vm.videoPhotoToggle = !vm.videoPhotoToggle;
                         vm.topbarToggle = true;
+                        vm.liveviewToggle = false;
                         return vm.videoState = 'H264 MODE';
-                  
-                     }
+
+                    }
                     xhr.send();
 
                 } else if (vm.rtspH264Toggle == false || vm.rtspH264Toggle == null) {
                     console.log('MJPG MODE');
                     vm.videoState = 'Sending...';
-                   
+                    vm.liveviewToggle = true;
                     // xhr.open('GET', this.fileDownloadAPI, true);
                     xhr.open('GET', this.switchModeAPI + '1', true);
                     console.log('message sent');
 
-                  
+
                     xhr.onload = function() {
-                           console.log('message received');
+                        console.log('message received');
                         console.log('MJPG' + JSON.parse(xhr.responseText));
                         vm.videoPhotoToggle = !vm.videoPhotoToggle;
                         return vm.videoState = 'MJPG MODE';
-                        }
+                    }
 
                     xhr.send();
-                   
+
 
 
                 }
@@ -1117,6 +1145,11 @@
             topbarStateToggle: function() {
 
                 this.topbarToggle = !this.topbarToggle;
+
+                // if (this.topbarToggle == false) {
+
+                // }
+
                 // this.videoPhotoToggle = !this.videoPhotoToggle;
 
                 // if (this.topbarToggle == false) {
@@ -1197,11 +1230,14 @@
                 var xhr = new XMLHttpRequest()
                 var self = this
 
-                if (this.recordToggle == true) {
+                if (this.recordToggle == true ) {
                     xhr.open('GET', this.startRecordAPI, true);
+                     vm.videoCaptureCount('start');
                     console.log("see click: start record!");
-                } else {
+                } 
+                else if(this.recordToggle == false) {
                     xhr.open('GET', this.stopRecordAPI, true);
+                    vm.videoCaptureCount('stop');
                     console.log("see click: finish record!");
                 }
 
@@ -1213,12 +1249,42 @@
                     if (answer1.result == "OK") {
                         console.log("change state!")
                         vm.recordToggle = !vm.recordToggle;
+                       
                         console.log("recent record stage:" + vm.recordToggle);
                     } else {
                         alarm(answer1.result + 'occoured!');
                     }
                 }
                 xhr.send()
+            },
+            videoCaptureCount: function(command) {
+                console.log('received command:'+ command);
+                if (command == 'start') {
+                   vm.recordBlockColor = {color:'red'};
+                    window.clearInterval(vm.countTime);
+                   
+                        var sec = 0;
+                        var miniSec = 0;
+                        vm.countTime = window.setInterval(function() {
+                            sec++;
+                            var date = new Date(0, 0)
+                            date.setSeconds(sec);
+                            var h = date.getHours(),
+                                m = date.getMinutes(),
+                                s = date.getSeconds();
+                                // ms = date.getMilliseconds();
+                                 h >= 10 ? h : "0" + h;
+                                  m >= 10 ? m : "0" + m;
+                                   s >= 10 ? s : "0" + s;
+                                      // ms >= 100 ? ms : "0" + ms;
+                            vm.recordTime =  h + ":" + m + ":" + s ;
+                        }, 1000);
+                    
+                } else if (command == 'stop') {
+                           vm.recordBlockColor = null;
+                    window.clearInterval(vm.countTime);
+                    return vm.recordTime = '00:00:00'
+                }
             },
             closeFileDownload: function() {
                 return vm.showVideo = false;
@@ -1255,7 +1321,7 @@
                 console.log(vm.snapshotCounts);
                 var currentSnapshotAPI = this.snapshotAPI + this.snapshotCounts + '.jpg&dir=' + this.snapshotStoreDir;
                 var xhr = new XMLHttpRequest();
-                     var self = this;
+                var self = this;
 
                 xhr.open('GET', currentSnapshotAPI, true);
                 // this.ajaxRequest(this.fileDownloadAPI);
@@ -1283,13 +1349,19 @@
             sendVideoReso: function() {
                 var xhr = new XMLHttpRequest();
                 //     var self = this;
-
+                var t = new Date();
                 xhr.open('GET', this.videoResoAPI + this.defaultVideoReso + this.defaultVideoFps, true);
                 xhr.onload = function() {
                     var answer = JSON.parse(xhr.responseText);
                     console.log(answer.result);
                 }
                 xhr.send();
+
+                window.setTimeout(function() {
+                    vm.liveviewURL = 'http://' + window.location.hostname + ':8080?' + t.getTime();
+                    return console.log('new liveviewURL:' + vm.liveviewURL);
+                }, 500)
+
             },
             adModeSwitch: function() {
                 vm.wifiAlertState = false;
@@ -1351,20 +1423,35 @@
                 }
             },
             startTracking: function() {
-                console.log('start tracking color!!');
-                var colors = new tracking.ColorTracker(['magenta', 'cyan', 'yellow']);
 
-                colors.on('track', function(event) {
-                    if (event.data.length === 0) {
-                        // No colors were detected in this frame.
-                    } else {
-                        event.data.forEach(function(rect) {
-                            console.log(rect.x, rect.y, rect.height, rect.width, rect.color);
-                        });
-                    }
-                });
+                this.trackingToggle = !this.trackingToggle;
+                console.log('start tracking');
 
-                tracking.track('#Mjpg', colors);
+                if (this.trackingToggle == true) {
+                    console.log('start loading img')
+                    vm.topbarToggle = false;
+
+                    this.imgUpdate();
+                } else {
+                    console.log('stop loading img')
+                    vm.topbarToggle = true;
+                    return vm.liveviewURL = 'http://' + window.location.hostname + ':8080'
+                }
+
+
+
+            },
+
+            imgUpdate: function() {
+                console.log('start imgUpdate')
+                if (vm.topbarToggle == true) {
+                    return vm.liveviewURL = 'http://' + window.location.hostname + ':8080';
+                } else {
+                    var d = new Date();
+                    vm.cvImageUrl = '../opencv/hi.jpg?' + d.getTime();
+                    vm.liveviewURL = vm.cvImageUrl;
+                    var timeoutID = window.setTimeout(this.imgUpdate, 500);
+                }
             }
         },
 
@@ -1405,14 +1492,6 @@
             liverasvg: {
                 template: '#livera-img'
             },
-
-            // screenresolution:{
-            //   template:'#screen-resolution'
-            // }
-            // ,
-            // RobotControl:{
-            //   template:'#Robot-control'
-            // }
         }
     });
     </script>

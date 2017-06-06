@@ -31,8 +31,8 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;   
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    /*text-overflow: ellipsis;*/
+    /*white-space: nowrap;*/
 }
 
 
@@ -133,8 +133,7 @@
    margin-left: 5%;
    margin-top: 25px;
    margin-bottom: 25px;
-   font-size: 1.6em;
-
+   font-size: 1.4em;
 }
 
 .centerBlock {
